@@ -42,6 +42,9 @@ FILES_TO_UPLOAD = [
     "assets/store_logos/StoreLogo_300x300.png",
     "assets/store_logos/Square150x150Logo.png",
     "assets/store_logos/Square310x310Logo.png",
+    "assets/store_logos/Kavi_Owl_Logo_1080x1080.png",
+    "assets/store_logos/Poster_720x1080.png",
+    "dist/AksharaFlow_Studio.exe",
 ]
 
 
@@ -206,9 +209,9 @@ def main():
                 dl_url = up_data.get("browser_download_url")
                 print("\n" + "=" * 72)
                 print("  🎉 SUCCESS! REPOSITORY & RELEASE PUBLISHED TO GITHUB!")
-                print(f"  GitHub Repo URL : https://github.com/{username}/{REPO_NAME}")
-                print(f"  Direct .EXE URL : {dl_url}")
-                print("  (Paste the Direct .EXE URL above into Microsoft Store Partner Center!)")
+                print(f"  GitHub Repo URL       : https://github.com/{username}/{REPO_NAME}")
+                print(f"  ZERO-REDIRECT EXE URL : https://raw.githubusercontent.com/{username}/{REPO_NAME}/main/dist/AksharaFlow_Studio.exe")
+                print("  (Paste the ZERO-REDIRECT EXE URL above into Microsoft Store Partner Center!)")
                 print("=" * 72)
             else:
                 print(f"  Release created! Upload status ({st_up}): {up_data.get('message')}")
