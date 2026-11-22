@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="sunlit">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AksharaFlow — Every Script. Every Finger. Free Forever.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- DECORATIVE LIVING BACKGROUND BLOBS -->
+  <div class="ambient-bg-shapes" aria-hidden="true">
+    <div class="blob blob-marigold"></div>
+    <div class="blob blob-peacock"></div>
+    <div class="blob blob-coral"></div>
+  </div>
+
+  <!-- ========================================================================
+       1. WELCOME + NAME + 14-LANGUAGE SELECTOR MODAL
+       ======================================================================== -->
+  <div id="userModal" class="modal-backdrop">
+    <div class="welcome-studio-shell">
+      <!-- Top Illustrated Wave Header -->
+      <div class="welcome-wave-banner">
+        <div class="mascot-welcome-wrap">
+          <!-- Kavi the Animated Scribe Owl SVG -->
+          <svg viewBox="0 0 110 110" width="84" height="84" class="kavi-owl-svg">
+            <circle cx="55" cy="55" r="50" fill="#FEF3C7" stroke="#F59E0B" stroke-width="3"/>
+            <!-- Ears/Tufts -->
+            <path d="M26 32 L18 14 L38 24 Z" fill="#D97706"/>
+            <path d="M84 32 L92 14 L72 24 Z" fill="#D97706"/>
+            <!-- Body -->
+            <ellipse cx="55" cy="64" rx="33" ry="34" fill="#F59E0B"/>
+            <ellipse cx="55" cy="70" rx="23" ry="24" fill="#FEF3C7"/>
+            <!-- Feather Belly Marks -->
+            <path d="M46 66 Q50 71 54 66 M56 66 Q60 71 64 66 M50 76 Q55 81 60 76" stroke="#D97706" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- Eyes -->
+            <circle cx="41" cy="46" r="13" fill="#FFFFFF" stroke="#B45309" stroke-width="2.5"/>
+            <circle cx="69" cy="46" r="13" fill="#FFFFFF" stroke="#B45309" stroke-width="2.5"/>
+            <circle cx="42" cy="46" r="6" fill="#1C1917" class="owl-pupil"/>
+            <circle cx="70" cy="46" r="6" fill="#1C1917" class="owl-pupil"/>
+            <circle cx="44" cy="43" r="2.2" fill="#FFFFFF"/>
+            <circle cx="72" cy="43" r="2.2" fill="#FFFFFF"/>
+            <!-- Glasses Rim -->
+            <path d="M54 46 L56 46" stroke="#78350F" stroke-width="3"/>
+            <!-- Beak -->
+            <polygon points="55,51 49,60 61,60" fill="#EA580C"/>
+          </svg>
+        </div>
+
+        <div class="welcome-banner-copy">
+          <div class="free-forever-pill">✨ 100% Free Public Edition • Offline Desktop Studio</div>
+          <h1>AksharaFlow <span class="title-accent">Studio</span></h1>
+          <p>Master touch-typing with joy! Enter your name, pick your script (English or any of 13 Indian Languages), and start flowing.</p>
+        </div>
+      </div>
+
+      <div class="welcome-content-columns">
+        <!-- Left Column: Step 1 (Name) + Step 2 (Language Selection Grid) -->
+        <div class="welcome-form-col">
+          <form id="loginForm" onsubmit="handleUserLogin(event)">
+            <div class="step-label-row">
+              <span class="step-circle">1</span>
+              <label for="userNameInput">What is your name?</label>
+            </div>
+            <div class="name-entry-bar">
+              <input
+                type="text"
+                id="userNameInput"
+                placeholder="Type your name (e.g., Aarav, Sneha, Karthik, Alex)..."
+                autocomplete="off"
+                required
+              />
+            </div>
+
+            <div class="step-label-row" style="margin-top: 18px;">
+              <span class="step-circle">2</span>
+              <label>Choose the Language Script you want to learn:</label>
+            </div>
+
+            <!-- 14-Script Visual Selector Grid -->
+            <div id="welcomeLangGrid" class="welcome-lang-grid">
+              <!-- Populated dynamically with all 14 scripts -->
+            </div>
+
+            <!-- Inline Native Language InScript Tip Preview (Shows when an Indian script is selected!) -->
+            <div id="welcomeInscriptPreview" class="welcome-inscript-preview hidden">
+              <div class="wip-header">
+                <span class="wip-icon">⌨️</span>
+                <strong id="wipNativeTitle">हिन्दी (InScript) कीबोर्ड कैसे चालू करें</strong>
+              </div>
+              <ul id="wipNativeSteps" class="wip-steps-list"></ul>
+              <div class="wip-auto-note">
+                ✅ <strong>Smart Auto-InScript Active:</strong> Even if you haven't turned on InScript in Windows yet, AksharaFlow automatically maps your keyboard keys to this script!
+              </div>
+            </div>
+
+            <button type="submit" class="btn-launch-journey">
+              <span id="btnLaunchText">Start My Typing Journey in English</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right Column: Saved Learners on This Computer -->
+        <div class="welcome-saved-col">
+          <div class="saved-col-header">
+            <h3>Saved Learners on This PC</h3>
+            <span id="savedUsersCount" class="badge-pill">0 learners</span>
+          </div>
+          <p class="tiny-hint">Click your card below to jump straight back to your lesson and language:</p>
+          <div id="savedUsersList" class="saved-learners-stack"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. INSCRIPT KEYBOARD GUIDE & LIVE TEST MODAL (IN NATIVE LANGUAGE!)
+       ======================================================================== -->
+  <div id="inscriptGuideModal" class="modal-backdrop hidden">
+    <div class="inscript-modal-card">
+      <div class="im-top-banner">
+        <div class="im-script-glyph" id="imGlyphBadge">अ</div>
+        <div>
+          <span class="im-eyebrow">Official Govt. of India InScript Layout Guide</span>
+          <h2 id="imModalNativeTitle">हिन्दी (InScript) कीबोर्ड निर्देश</h2>
+          <p id="imModalSubTitle">Simple instructions to type in your selected script</p>
+        </div>
+      </div>
+
+      <div class="im-body">
+        <div class="im-native-card">
+          <h4>📌 निर्देश (Instructions in Your Language):</h4>
+          <ul id="imNativeStepsList" class="im-steps"></ul>
+        </div>
+
+        <div class="im-english-card">
+          <h4>💡 How It Works (Dual-Mode Support):</h4>
+          <ul id="imEnglishStepsList" class="im-steps"></ul>
+          <div class="auto-inscript-toggle-box">
+            <label class="switch-row">
+              <input type="checkbox" id="modalAutoInscriptToggle" checked onchange="toggleAutoInscriptMode(this.checked)" />
+              <div>
+                <strong>Enable Built-in Smart InScript Mapper (Recommended)</strong>
+                <span>Automatically converts your English QWERTY keys into InScript characters even if your Windows OS keyboard is still set to English!</span>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="im-actions">
+        <button type="button" class="btn-launch-journey" style="margin-top:0;" onclick="closeInscriptGuideModal()">
+          Got It! Let's Start Typing &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       3. CELEBRATION & LESSON RESULT MODAL
+       ======================================================================== -->
+  <div id="resultModal" class="modal-backdrop hidden">
+    <div class="celebration-dialog">
+      <div class="result-medal-burst" id="resultStars">⭐⭐⭐</div>
+      <h2 id="resultTitle">Fantastic Flow!</h2>
+      <p id="resultSubtitle" class="sub-copy">Chapter Step Completed</p>
+
+      <div class="result-stat-bubbles">
+        <div class="rs-bubble teal">
+          <span class="rs-lbl">Net Speed</span>
+          <strong id="resNetWpm" class="rs-val">0 WPM</strong>
+          <small id="resGrossWpm">Raw: 0 WPM</small>
+        </div>
+        <div class="rs-bubble emerald">
+          <span class="rs-lbl">Accuracy</span>
+          <strong id="resAccuracy" class="rs-val">100%</strong>
+          <small id="resErrors">0 slips</small>
+        </div>
+        <div class="rs-bubble marigold">
+          <span class="rs-lbl">Duration</span>
+          <strong id="resDuration" class="rs-val">0s</strong>
+          <small id="resKeystrokes">0 keys</small>
+        </div>
+      </div>
+
+      <div id="resultDiagnosticBox" class="kavi-feedback-card">
+        <div class="kfc-header">
+          <span class="kfc-owl">🦉</span>
+          <h4>Coach Kavi's Observation</h4>
+        </div>
+        <p id="resDiagnosticText">Analyzing your finger rhythm...</p>
+        <div id="resWeakKeysChips" class="weak-chips-row"></div>
+      </div>
+
+      <div class="result-btn-row">
+        <button type="button" class="btn-soft" onclick="closeResultModalAndRetry()">↻ Replay Step</button>
+        <button type="button" id="btnResultRemedial" class="btn-marigold" onclick="startSmartRemedialFromModal()">🎯 Practice Weak Keys</button>
+        <button type="button" id="btnResultNext" class="btn-peacock" onclick="startNextLessonFromModal()">Next Step &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MAIN AKSHARAFLOW STUDIO WORKSPACE
+       ======================================================================== -->
+  <div class="app-frame" id="appFrame">
+    <!-- FLOATING SIDEBAR TOGGLE BUTTON (Visible when sidebar is collapsed in Focus Mode) -->
+    <button
+      id="floatingSidebarToggle"
+      class="floating-sidebar-toggle hidden"
+      onclick="toggleSidebarPanel()"
+      title="Open Sidebar Menu"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <span>Menu</span>
+    </button>
+
+    <!-- PLAYFUL WARM SIDEBAR -->
+    <aside class="craft-sidebar" id="craftSidebar">
+      <div class="sidebar-logo-block">
+        <div class="logo-emblem">अ</div>
+        <div style="flex:1;min-width:0;">
+          <div class="logo-name">AksharaFlow</div>
+          <div class="logo-tagline">14-Script Typing Studio</div>
+        </div>
+        <button class="btn-collapse-sidebar" onclick="toggleSidebarPanel()" title="Collapse Sidebar for Focus Mode">
+          ◀
+        </button>
+      </div>
+
+      <!-- Active Learner & Quick Language Switcher -->
+      <div class="profile-pod">
+        <div class="pod-top">
+          <div class="pod-avatar" id="sidebarAvatar">A</div>
+          <div class="pod-info">
+            <div class="pod-name-line">
+              <strong id="sidebarUserName">Learner</strong>
+              <span class="pod-streak" id="sidebarStreak">🔥 1d</span>
+            </div>
+            <div class="pod-sub" id="sidebarUserProgress">0/29 steps • 0 WPM</div>
+          </div>
+          <button class="btn-pod-switch" onclick="openUserSwitcher()" title="Switch Learner or Script">
+            Switch
+          </button>
+        </div>
+
+        <!-- Active Script Selector Pill right inside Sidebar -->
+        <div class="pod-lang-bar">
+          <label for="sidebarLangSelect">Script:</label>
+          <select id="sidebarLangSelect" onchange="switchActiveLanguage(this.value)"></select>
+          <button class="btn-help-inscript" id="btnSidebarInscriptGuide" onclick="openInscriptGuideModal()" title="View Keyboard Instructions">
+            ?
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Menu with Expressive Badges -->
+      <nav class="craft-nav">
+        <button class="cnav-btn active" data-tab="course" onclick="switchTab('course')">
+          <span class="cnav-icon coral-bg">🗺️</span>
+          <span class="cnav-text">Adventure Map</span>
+          <span class="cnav-pill" id="navCourseBadge">0/29</span>
+        </button>
+
+        <button class="cnav-btn" data-tab="practice" onclick="switchTab('practice')">
+          <span class="cnav-icon peacock-bg">⌨️</span>
+          <span class="cnav-text">Typing Desk</span>
+          <span class="cnav-pill live">Play</span>
+        </button>
+
+        <button class="cnav-btn" data-tab="custom" onclick="switchTab('custom')">
+          <span class="cnav-icon emerald-bg">📝</span>
+          <span class="cnav-text">Custom Text</span>
+          <span class="cnav-pill">1500w</span>
+        </button>
+
+        <button class="cnav-btn" data-tab="tutor" onclick="switchTab('tutor')">
+          <span class="cnav-icon marigold-bg">🦉</span>
+          <span class="cnav-text">Mistake Coach</span>
+          <span class="cnav-pill warn" id="navWeakBadge">Smart</span>
+        </button>
+
+        <button class="cnav-btn" data-tab="games" onclick="switchTab('games')">
+          <span class="cnav-icon berry-bg">🎮</span>
+          <span class="cnav-text">Arcade Games</span>
+          <span class="cnav-pill">3 Games</span>
+        </button>
+
+        <button class="cnav-btn" data-tab="speedtest" onclick="switchTab('speedtest')">
+          <span class="cnav-icon emerald-bg">⏱️</span>
+          <span class="cnav-text">Speed Arena</span>
+        </button>
+
+        <button class="cnav-btn" data-tab="stats" onclick="switchTab('stats')">
+          <span class="cnav-icon indigo-bg">🏆</span>
+          <span class="cnav-text">My Journey</span>
+        </button>
+      </nav>
+
+      <!-- Animated Coach Kavi Companion Pod in Sidebar -->
+      <div class="kavi-companion-pod" onclick="launchRecommendedRemedial()" title="Click for a personalized weak-key workout!">
+        <div class="kavi-mini-avatar">🦉</div>
+        <div class="kavi-speech">
+          <strong id="kaviGreetingTitle">Coach Kavi Says:</strong>
+          <p id="kaviSidebarSpeech">Welcome! Keep your shoulders relaxed and let your fingers dance!</p>
+        </div>
+      </div>
+
+      <!-- Studio Toggles -->
+      <div class="sidebar-toggles">
+        <label class="st-row">
+          <span>🔊 Tactile Key Clicks</span>
+          <input type="checkbox" id="toggleSound" checked onchange="updatePreference('sound', this.checked)" />
+        </label>
+        <label class="st-row">
+          <span>🎹 3D Keyboard &amp; Hands</span>
+          <input type="checkbox" id="toggleKeyboard" checked onchange="updatePreference('show_keyboard', this.checked)" />
+        </label>
+        <label class="st-row" id="rowAutoInscript">
+          <span>✨ Auto-InScript Key Mapper</span>
+          <input type="checkbox" id="toggleAutoInscript" checked onchange="toggleAutoInscriptMode(this.checked)" />
+        </label>
+        <label class="st-row">
+          <span>🌙 Cozy Night Theme</span>
+          <input type="checkbox" id="toggleDarkTheme" onchange="toggleStudioTheme(this.checked)" />
+        </label>
+      </div>
+    </aside>
+
+    <!-- MAIN STAGE -->
+    <main class="craft-stage">
+      <!-- ====================================================================
+           TAB 1: ADVENTURE COURSE MAP
+           ==================================================================== -->
+      <section id="tab-course" class="tab-pane active">
+        <!-- Colorful Illustrated World Header -->
+        <div class="world-hero-card">
+          <div class="wh-left">
+            <div class="wh-script-pill" id="courseLanguageBadge">ENGLISH (QWERTY)</div>
+            <h2 id="courseHeroHeading">Your Touch-Typing Adventure Map</h2>
+            <p id="courseHeroSub">Travel from the Home Row Sanctuary through Top &amp; Bottom Peaks, Numbers, Punctuation, and Grand Mastery!</p>
+          </div>
+          <div class="wh-right">
+            <button class="btn-inscript-banner hidden" id="btnCourseInscriptHelp" onclick="openInscriptGuideModal()">
+              ⌨️ How to Enable InScript Keyboard
+            </button>
+            <button class="btn-marigold" onclick="launchRecommendedRemedial()">
+              🎯 Train My Weak Keys
+            </button>
+            <button class="btn-peacock" id="btnResumeCurrentLesson" onclick="resumeCurrentLesson()">
+              ▶ Continue Journey
+            </button>
+          </div>
+        </div>
+
+        <!-- Colorful Stat Badges -->
+        <div class="journey-stats-strip">
+          <div class="jstat-card c-coral">
+            <div class="js-icon">🏅</div>
+            <div>
+              <span>Steps Mastered</span>
+              <strong id="courseCompletedCount">0 / 29</strong>
+            </div>
+          </div>
+          <div class="jstat-card c-peacock">
+            <div class="js-icon">⚡</div>
+            <div>
+              <span>Fastest Flow</span>
+              <strong id="coursePeakWpm">0 WPM</strong>
+            </div>
+          </div>
+          <div class="jstat-card c-emerald">
+            <div class="js-icon">🎯</div>
+            <div>
+              <span>Precision</span>
+              <strong id="courseAvgAcc">100%</strong>
+            </div>
+          </div>
+          <div class="jstat-card c-marigold">
+            <div class="js-icon">⏳</div>
+            <div>
+              <span>Time Invested</span>
+              <strong id="courseTotalTime">0 mins</strong>
+            </div>
+          </div>
+          <div class="jstat-card c-berry">
+            <div class="js-icon">🔑</div>
+            <div>
+              <span>Focus Keys</span>
+              <strong id="courseWeakKeysQuick">All clear!</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chapter Worlds & Stepping Stones -->
+        <div id="unitsContainer" class="chapters-container"></div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 2: THE ARTISAN TYPING DESK
+           ==================================================================== -->
+      <section id="tab-practice" class="tab-pane">
+        <!-- Top Desk Ribbon -->
+        <div class="artisan-desk-bar">
+          <div class="adb-left">
+            <button class="btn-desk-menu" onclick="toggleSidebarPanel()" title="Toggle Sidebar Menu">
+              ☰
+            </button>
+            <span class="adb-badge" id="studioModeBadge">LESSON</span>
+            <h3 id="studioLessonTitle">1.1 Index &amp; Middle Anchor Keys</h3>
+          </div>
+
+          <div class="adb-gauges">
+            <div class="live-dial dial-speed">
+              <span class="ld-lbl">SPEED</span>
+              <strong id="liveNetWpm">0</strong>
+              <small>WPM</small>
+            </div>
+            <div class="live-dial dial-acc">
+              <span class="ld-lbl">ACCURACY</span>
+              <strong id="liveAccuracy">100%</strong>
+            </div>
+            <div class="live-dial dial-combo">
+              <span class="ld-lbl">STREAK</span>
+              <strong id="liveStreakCombo">0🔥</strong>
+            </div>
+            <div class="live-dial dial-err">
+              <span class="ld-lbl">SLIPS</span>
+              <strong id="liveErrors">0</strong>
+            </div>
+            <div class="live-dial dial-time">
+              <span class="ld-lbl">TIME</span>
+              <strong id="liveTimer">0:00</strong>
+            </div>
+            <button class="btn-soft btn-sm" onclick="restartCurrentDrill()">↻ Restart (Esc)</button>
+          </div>
+        </div>
+
+        <!-- Glowing Progress River -->
+        <div class="river-progress-track">
+          <div id="drillProgressBar" class="river-progress-fill" style="width: 0%"></div>
+        </div>
+
+        <!-- Coach Kavi Live Bar & Next Key Callout -->
+        <div class="kavi-desk-strip">
+          <div class="kds-left">
+            <span class="kds-owl" id="deskOwlEmoji">🦉</span>
+            <span id="studioCoachTip">Rest your index fingers on F and J. Keep your eyes on the scroll!</span>
+          </div>
+          <div class="kds-right">
+            <button class="btn-inscript-mini hidden" id="btnDeskInscriptGuide" onclick="openInscriptGuideModal()">
+              ⌨️ InScript Help
+            </button>
+            <span class="kds-press">Strike:</span>
+            <kbd id="nextKeyBadge" class="3d-mini-key">f</kbd>
+            <span id="nextPhysicalKeyHint" class="phys-key-hint"></span>
+            <span id="nextFingerBadge" class="finger-ribbon-tag">Left Index Finger</span>
+          </div>
+        </div>
+
+        <!-- PARCHMENT SCROLL TYPING ARENA -->
+        <div
+          id="typingArenaBox"
+          class="parchment-scroll-box"
+          tabindex="0"
+          onclick="focusTypingArena()"
+        >
+          <div id="floatingSparkleLayer" class="sparkle-layer"></div>
+          <div id="typingTextDisplay" class="parchment-text-stream"></div>
+          <div id="arenaFocusOverlay" class="scroll-paused-overlay hidden">
+            <div class="paused-Cloud">✨ Click here or press any key to continue typing</div>
+          </div>
+        </div>
+
+        <!-- WOODEN ARTISAN 3D KEYBOARD & ANATOMICAL HANDS -->
+        <div id="visualKeyboardSection" class="wooden-desk-mat">
+          <div class="mat-layout">
+            <!-- Left Hand -->
+            <div class="hand-sculpture-card">
+              <div class="hsc-title">Left Hand <span class="hsc-role" id="leftHandRoleTag"></span></div>
+              <svg viewBox="0 0 190 185" class="ergo-hand-svg">
+                <path d="M40 102 C35 95, 145 95, 145 108 L142 162 C140 174, 48 174, 42 162 Z" class="palm-shape" />
+                <g id="finger-L_PINKY" class="finger-node">
+                  <rect x="20" y="45" width="23" height="66" rx="11.5" transform="rotate(-6 31 78)" />
+                  <circle cx="30" cy="54" r="6" class="nail" />
+                  <text x="27" y="34" text-anchor="middle">Pinky</text>
+                </g>
+                <g id="finger-L_RING" class="finger-node">
+                  <rect x="51" y="22" width="24" height="84" rx="12" transform="rotate(-2 63 64)" />
+                  <circle cx="62" cy="32" r="6.5" class="nail" />
+                  <text x="61" y="14" text-anchor="middle">Ring</text>
+                </g>
+                <g id="finger-L_MIDDLE" class="finger-node">
+                  <rect x="83" y="12" width="25" height="92" rx="12.5" />
+                  <circle cx="95.5" cy="22" r="7" class="nail" />
+                  <text x="95.5" y="8" text-anchor="middle">Middle</text>
+                </g>
+                <g id="finger-L_INDEX" class="finger-node">
+                  <rect x="115" y="24" width="25" height="80" rx="12.5" transform="rotate(3 127 64)" />
+                  <circle cx="128" cy="34" r="6.8" class="nail" />
+                  <text x="130" y="16" text-anchor="middle">Index</text>
+                </g>
+                <g id="finger-L_THUMB" class="finger-node">
+                  <rect x="144" y="86" width="26" height="56" rx="13" transform="rotate(28 144 86)" />
+                  <text x="166" y="78" text-anchor="middle">Thumb</text>
+                </g>
+              </svg>
+            </div>
+
+            <!-- Walnut Wood Framed 3D Keycap Board -->
+            <div id="virtualKeyboard" class="walnut-keyboard-frame"></div>
+
+            <!-- Right Hand -->
+            <div class="hand-sculpture-card">
+              <div class="hsc-title">Right Hand <span class="hsc-role" id="rightHandRoleTag"></span></div>
+              <svg viewBox="0 0 190 185" class="ergo-hand-svg">
+                <path d="M45 108 C45 95, 155 95, 150 102 L148 162 C142 174, 50 174, 48 162 Z" class="palm-shape" />
+                <g id="finger-R_THUMB" class="finger-node">
+                  <rect x="20" y="98" width="26" height="56" rx="13" transform="rotate(-28 20 98)" />
+                  <text x="24" y="78" text-anchor="middle">Thumb</text>
+                </g>
+                <g id="finger-R_INDEX" class="finger-node">
+                  <rect x="50" y="24" width="25" height="80" rx="12.5" transform="rotate(-3 62 64)" />
+                  <circle cx="61" cy="34" r="6.8" class="nail" />
+                  <text x="60" y="16" text-anchor="middle">Index</text>
+                </g>
+                <g id="finger-R_MIDDLE" class="finger-node">
+                  <rect x="82" y="12" width="25" height="92" rx="12.5" />
+                  <circle cx="94.5" cy="22" r="7" class="nail" />
+                  <text x="94.5" y="8" text-anchor="middle">Middle</text>
+                </g>
+                <g id="finger-R_RING" class="finger-node">
+                  <rect x="115" y="22" width="24" height="84" rx="12" transform="rotate(2 127 64)" />
+                  <circle cx="128" cy="32" r="6.5" class="nail" />
+                  <text x="129" y="14" text-anchor="middle">Ring</text>
+                </g>
+                <g id="finger-R_PINKY" class="finger-node">
+                  <rect x="147" y="45" width="23" height="66" rx="11.5" transform="rotate(6 158 78)" />
+                  <circle cx="160" cy="54" r="6" class="nail" />
+                  <text x="163" y="34" text-anchor="middle">Pinky</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          <div class="finger-rainbow-legend">
+            <span><i class="fdot fd-pinky"></i> Pinky</span>
+            <span><i class="fdot fd-ring"></i> Ring</span>
+            <span><i class="fdot fd-middle"></i> Middle</span>
+            <span><i class="fdot fd-l-index"></i> Left Index</span>
+            <span><i class="fdot fd-r-index"></i> Right Index</span>
+            <span><i class="fdot fd-thumb"></i> Thumbs (Space)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 3: COACH KAVI'S MISTAKE CLINIC
+           ==================================================================== -->
+      <section id="tab-tutor" class="tab-pane">
+        <div class="world-hero-card coach-hero">
+          <div class="wh-left">
+            <div class="wh-script-pill">SMART ADAPTIVE CLINIC</div>
+            <h2>🦉 Coach Kavi's Finger Reflex Lab</h2>
+            <p>Every slip and hesitation is gently analyzed to build custom practice lines in your active script.</p>
+          </div>
+          <button class="btn-marigold" onclick="launchRecommendedRemedial()">
+            🎯 Start Personal Weak-Key Workout &rarr;
+          </button>
+        </div>
+
+        <div class="kavi-insight-banner" id="tutorCoachBanner">
+          Complete a short lesson so Coach Kavi can analyze your finger reflexes!
+        </div>
+
+        <div class="two-col-grid">
+          <div class="craft-card">
+            <h3>🔍 Keys Needing Extra Care</h3>
+            <p class="sub-copy small">Ranked by slip rate and reaction latency (ms).</p>
+            <div id="weakKeysTableWrap" class="diagnostic-stack"></div>
+
+            <div class="custom-drill-creator">
+              <h4>✨ Create Your Own Key Workout</h4>
+              <p class="sub-copy small">Enter any characters, matras, numbers, or punctuation marks to generate a custom drill:</p>
+              <div class="inline-input-row">
+                <input type="text" id="customFocusKeysInput" placeholder="e.g. f g j h ; . , or क ख ि ी" />
+                <button class="btn-peacock" onclick="launchCustomKeyDrill()">Build Drill</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="craft-card">
+            <h3>🔄 Common Key Mix-Ups (Confusion Matrix)</h3>
+            <p class="sub-copy small">Shows which key was struck when aiming for a target character.</p>
+            <div id="confusionPairsList" class="diagnostic-stack"></div>
+
+            <h3 style="margin-top:24px;">🖐️ Precision &amp; Speed by Finger</h3>
+            <div id="fingerBreakdownList" class="diagnostic-stack"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 4: ARCADE CANVAS TYPING GAMES
+           ==================================================================== -->
+      <section id="tab-games" class="tab-pane">
+        <div class="section-header-bar">
+          <div>
+            <h2>🎮 AksharaFlow Arcade</h2>
+            <p class="sub-copy">Play in your active language script! Target-locking 60–144fps games that train reflexes and weak keys.</p>
+          </div>
+          <div class="arcade-controls">
+            <label class="ctrl-pill">
+              <span>Key Pool:</span>
+              <select id="gamePoolSelect" onchange="changeGamePool(this.value)">
+                <option value="simple_cons">🌱 Beginner Single Letters (1-Key Pops)</option>
+                <option value="gunintalu" selected>✨ Gunintalu / Syllables (2-Key Pops)</option>
+                <option value="weak">🎯 My Weak Keys + Learned Keys</option>
+                <option value="homerow">Home Row Only</option>
+                <option value="words">Full Words &amp; Punctuation</option>
+              </select>
+            </label>
+            <label class="ctrl-pill">
+              <span>Pace:</span>
+              <select id="gameDifficultySelect" onchange="this.blur()">
+                <option value="easy" selected>Gentle (Learner)</option>
+                <option value="normal">Standard</option>
+                <option value="hard">Pro Reflex</option>
+              </select>
+            </label>
+            <label class="ctrl-pill" style="cursor:pointer;">
+              <input type="checkbox" id="gameKeyHintToggle" checked onchange="this.blur()" style="accent-color:var(--peacock);width:15px;height:15px;" />
+              <span>💡 Key Hints</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="arcade-selector-cards">
+          <div class="arcade-card active" id="gcard-bubbles" onclick="selectCanvasGame('bubbles')">
+            <div class="ac-tag teal">Sunlit Meadow</div>
+            <h4>🫧 Bubble Pop Reflex</h4>
+            <p>Pop rising bubbles in your chosen script! Golden Boss Bubbles target your weakest keys.</p>
+          </div>
+          <div class="arcade-card" id="gcard-rain" onclick="selectCanvasGame('rain')">
+            <div class="ac-tag marigold">Starlight Shield</div>
+            <h4>☄️ Meteor Laser Defense</h4>
+            <p>Lock your plasma turret onto falling words and shatter meteors with every keystroke!</p>
+          </div>
+          <div class="arcade-card" id="gcard-racer" onclick="selectCanvasGame('racer')">
+            <div class="ac-tag coral">Grand Prix</div>
+            <h4>🏎️ Nitro Type Sprint</h4>
+            <p>Type complete sentences in your active script to boost your roadster past 3 pace cars!</p>
+          </div>
+        </div>
+
+        <div class="arcade-cabinet">
+          <div class="cabinet-hud">
+            <div class="ch-left">
+              <strong id="activeGameTitle">🫧 Bubble Pop Reflex</strong>
+              <span id="gameTypedBuffer" class="lock-status-pill">Ready</span>
+            </div>
+            <div class="ch-stats">
+              <div><span>Score</span> <strong id="gameScore">0</strong></div>
+              <div><span>Streak</span> <strong id="gameCombo">0x</strong></div>
+              <div><span>Speed</span> <strong id="gameWpm">0 WPM</strong></div>
+              <div><span>Hearts</span> <strong id="gameLives">❤️❤️❤️❤️❤️</strong></div>
+            </div>
+            <div class="ch-btns">
+              <button class="btn-peacock btn-sm" id="btnStartGame" onclick="startSelectedCanvasGame()">▶ Play Game</button>
+              <button class="btn-soft btn-sm" onclick="stopCanvasGame(); drawIdleGameBanner();">⏹ Reset</button>
+            </div>
+          </div>
+          <div class="canvas-stage-box">
+            <canvas id="typingGameCanvas" tabindex="0"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 5: TIMED SPEED ARENA
+           ==================================================================== -->
+      <section id="tab-speedtest" class="tab-pane">
+        <div class="world-hero-card">
+          <div class="wh-left">
+            <div class="wh-script-pill">CERTIFICATION BENCHMARK</div>
+            <h2>⏱️ Timed Speed &amp; Accuracy Arena</h2>
+            <p>Test your real-world paragraph typing speed in your active language script.</p>
+          </div>
+        </div>
+
+        <div class="craft-card">
+          <div class="st-group">
+            <h4>1. Choose Duration</h4>
+            <div class="dur-row" id="stDurationGroup">
+              <button class="dur-pill active" onclick="setSpeedTestDuration(60, this)">1 Minute Sprint</button>
+              <button class="dur-pill" onclick="setSpeedTestDuration(120, this)">2 Minute Standard</button>
+              <button class="dur-pill" onclick="setSpeedTestDuration(300, this)">5 Minute Mastery</button>
+            </div>
+          </div>
+
+          <div class="st-group" style="margin-top:20px;">
+            <h4>2. Select Reading Passage</h4>
+            <div id="speedPassagesList" class="passages-grid"></div>
+          </div>
+
+          <div style="margin-top:22px;">
+            <button class="btn-peacock btn-lg" onclick="startTimedSpeedTest()">🚀 Start Timed Speed Benchmark &rarr;</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 6: MY JOURNEY & ALL 14 SCRIPTS
+           ==================================================================== -->
+      <section id="tab-stats" class="tab-pane">
+        <div class="section-header-bar">
+          <div>
+            <h2>🏆 Your Learning Journey &amp; 14-Script Library</h2>
+            <p class="sub-copy">Click any language card on the right to switch scripts and view its InScript setup guide!</p>
+          </div>
+        </div>
+
+        <div class="two-col-grid">
+          <div class="craft-card">
+            <h3>📜 Recent Practice &amp; Game Log</h3>
+            <div id="recentSessionsTable" class="history-scroll"></div>
+          </div>
+
+          <div class="craft-card">
+            <h3>🌏 All 14 Supported Scripts (Click Any Script to Switch!)</h3>
+            <p class="sub-copy small">Progress, speed stats, and weak-key profiles are stored separately for each script:</p>
+            <div id="languagesGrid" class="scripts-grid"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 7: CUSTOM TEXT PRACTICE STUDIO (PASTE ANY PARAGRAPH — UP TO 1,500 WORDS!)
+           ==================================================================== -->
+      <section id="tab-custom" class="tab-pane">
+        <div class="world-hero-card">
+          <div class="wh-left">
+            <div class="wh-script-pill">ANY LANGUAGE • LIVE 3D KEYBOARD &amp; FINGER GUIDE</div>
+            <h2>📝 Practice Your Own Paragraph (Up to 1,500 Words)</h2>
+            <p>Copy any news article, book passage, or exam paragraph in English or any of the 13 Indian languages! AksharaFlow automatically detects the script and lights up the exact keys &amp; fingers for every character.</p>
+          </div>
+        </div>
+
+        <div class="craft-card">
+          <div class="custom-studio-top">
+            <input
+              type="text"
+              id="customPassageTitle"
+              class="custom-title-input"
+              placeholder="Optional Title (e.g., Telugu News Paragraph, SSC Mock Passage, Hindi Essay...)"
+            />
+            <div class="custom-top-actions">
+              <button type="button" class="btn-soft btn-sm" onclick="pasteFromClipboardToCustom()">📋 Paste from Clipboard</button>
+              <button type="button" class="btn-soft btn-sm" onclick="clearCustomPassageBox()">✕ Clear</button>
+            </div>
+          </div>
+
+          <textarea
+            id="customPasteInput"
+            class="custom-paste-textarea"
+            rows="8"
+            placeholder="Paste any paragraph here (English, తెలుగు, हिन्दी, मराठी, தமிழ், ಕನ್ನಡ, മലയാളം, বাংলা, ਪੰਜਾਬੀ, ગુજરાતી, ଓଡ଼ିଆ, অসমীয়া, اردو — up to 1,500 words)..."
+            oninput="inspectCustomPastedText()"
+          ></textarea>
+
+          <!-- Live Smart Inspector Bar -->
+          <div class="custom-inspector-bar">
+            <div class="ci-badges">
+              <span class="badge-pill" id="customWordCountBadge">0 / 1,500 words</span>
+              <span class="badge-pill" id="customCharCountBadge">0 characters</span>
+              <span class="badge-pill" id="customDetectedScriptBadge" style="background:var(--peacock-tint);color:var(--peacock);border-color:var(--peacock);">
+                Script: Auto-Detect
+              </span>
+            </div>
+
+            <div class="ci-timer-select">
+              <label for="customTimerSelect">Timer:</label>
+              <select id="customTimerSelect">
+                <option value="0" selected>No Time Limit (Full Text)</option>
+                <option value="60">1 Minute</option>
+                <option value="120">2 Minutes</option>
+                <option value="300">5 Minutes</option>
+                <option value="600">10 Minutes</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="custom-launch-footer">
+            <label class="switch-row" style="align-items:center;">
+              <input type="checkbox" id="customAutoSwitchScript" checked />
+              <span style="font-size:0.86rem;font-weight:700;">Auto-switch 3D Keyboard &amp; Finger Guide to the detected script</span>
+            </label>
+            <button type="button" class="btn-peacock btn-lg" onclick="startCustomPastedPractice()">
+              🚀 Practice This Text with 3D Finger Guide &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- Recently Saved Custom Passages -->
+        <div class="craft-card" style="margin-top:16px;">
+          <h3>📚 Your Recently Pasted Passages</h3>
+          <p class="sub-copy small">Click any saved passage below to reload it instantly:</p>
+          <div id="recentCustomPassagesList" class="passages-grid" style="margin-top:10px;"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="games.js"></script>
+</body>
+</html>
